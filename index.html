@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول کلاس‌ها - Futurescool</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Peyda';
+            src: url('Peyda.woff2') format('woff2'),
+                 url('Peyda.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Peyda', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+        }
+
+        .class-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .class-card {
+            transition: all 0.3s ease-in-out;
+            transform: perspective(1000px);
+            will-change: transform;
+        }
+
+        .class-card:hover {
+            transform: scale(1.05) rotateY(5deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(145deg, #2bbc0a, #50c878);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin: 0.25rem;
+            transition: transform 0.2s;
+        }
+
+        .tool-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .popup {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .popup-content {
+            max-width: 800px;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .tool-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-popup {
+            animation: fadeIn 0.4s ease-out;
+        }
+        body {
+        color: #1a365d; /* Navy blue text color for the entire body */
+    }
+
+    .class-card button {
+        /* Gradient background on hover */
+        background: linear-gradient(to right, #e6f2ff 0%, #f0f9ff 100%);
+        color: #1a365d; /* Navy blue text */
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .class-card button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            120deg, 
+            rgba(52,152,219,0.1) 0%, 
+            rgba(52,152,219,0.3) 50%, 
+            rgba(52,152,219,0.1) 100%
+        );
+        transition: all 0.5s ease;
+    }
+
+    .class-card button:hover::before {
+        left: 100%;
+    }
+
+    .class-card button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        color: #2c3e50; /* Slightly darker blue on hover */
+    }
+
+    /* Popup title and headers */
+    .popup-content h2,
+    .tool-section h4 {
+        color: #1a365d; /* Navy blue for titles */
+    }
+    .class-card h3 {
+    background: linear-gradient(to right, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.popup-content {
+    background-color: rgb(239, 249, 255);
+}
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-blue-600">Futurescool</h1>
+        
+        <div class="class-grid">
+            <!-- Dynamic content will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="popup-content bg-white rounded-lg shadow-2xl p-6 w-full max-w-2xl animate-popup">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="popup-title" class="text-2xl font-bold text-blue-600"></h2>
+                <button onclick="closePopup()" class="text-gray-500 hover:text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <img id="popup-image" src="/api/placeholder/400/300" alt="Class Image" class="w-full rounded-lg mb-4">
+                    
+                    <div class="tool-section mb-4">
+                        <h4 class="font-semibold text-blue-500 mb-2">نیازمندی‌های تسهیلگر </h4>
+                        <p id="popup-requirements" class="text-gray-700"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="tool-section mb-4">
+                        <h4 class="font-semibold text-blue-500 mb-2">مهارت‌های قابل کسب</h4>
+                        <p id="popup-skills" class="text-gray-700"></p>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4 class="font-semibold text-blue-500 mb-2">ابزارهای مورد نیاز</h4>
+                        <div id="popup-tool-types" class="flex flex-wrap mb-2"></div>
+                        <div id="popup-tools" class="flex flex-wrap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy classInfo from the original script
+        const classInfo = {
+  "why-scool": {
+    title: "Why scool?",
+    requirements: 'این یک بازی با کلمات است به معنی "Future is cool!" یا "Futures cool(جذابیت‌های دنیای آینده)".',
+    skills: "درک خلاقانه زبان، نوآوری در معنی‌سازی",
+    toolTypes: ["بازی زبانی", "تفکر خلاق"],
+    tools: [],
+    image: "/api/placeholder/400/300",
+  },
+  "digital-ai-p1-c1": {
+    title: "داستان گویی دیجیتال",
+    requirements: "خلاقیت، مهارت داستان گویی",
+    skills: "توانایی ساخت داستان‌های تعاملی، استفاده از ابزارهای دیجیتال برای روایت، تقویت مهارت‌های ارتباطی",
+    toolTypes: ["آشنایی اولیه با دیجیتال", "ابزار داستان‌نویسی"],
+    tools: [
+      { name: "Scratch Junior", link: "https://scratch.mit.edu" },
+      { name: "Storyboard That", link: "https://www.storyboardthat.com" },
+    ],
+    image: "https://media.licdn.com/dms/image/v2/D4E12AQGGUpE8XyGSGQ/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1699581583096?e=2147483647&v=beta&t=mXjpwXLJVNAFg1WjSvJy7OEWuu2xZRlYxom4QbOyoaM",
+  },
+  "digital-ai-p1-c2": {
+    title: "آشنایی با دیجیتال",
+    requirements: " آشنایی اولیه با کامپیوتر، مهارت ICDL",
+    skills: "درک مفاهیم پایه دیجیتال، کار با نرم‌افزارهای کاربردی، آشنایی با اینترنت و شبکه‌های اجتماعی",
+    toolTypes: ["نرم‌افزار اداری", "ابزار آنلاین"],
+    tools: [
+      { name: "Microsoft Office", link: "https://www.microsoft.com/office" },
+      { name: "Google Workspace", link: "https://workspace.google.com" },
+    ],
+    image: "https://pub-d00f534024b04d0e8036586fc78a41fa.r2.dev/sites/2/2015/07/8-Start1.png",
+  },
+  "game-p1-c1": {
+    title: "بازی ریاضی",
+    requirements: "علاقه به ریاضیات، آشنایی با مفاهیم پایه ریاضی",
+    skills: "تقویت مهارت‌های ریاضی، تفکر منطقی، حل مسئله از طریق بازی دیجیتال",
+    toolTypes: ["بازی آموزشی", "نرم‌افزار ریاضی"],
+    tools: [
+        {name:"ST math"},  
+        {name:"Lumosity"},
+        {name:"Baam Boozle"},
+      { name: "Dragonbox ", link: "https://dragonbox.com/" },
+      { name: "Kahoot", link: "https://kahoot.com" },
+    ],
+    image: "https://deannajump.com/wp-content/uploads/2020/09/Slide-4.jpg",
+  },
+  "game-p1-c2": {
+    title: "بازی‌های فناورانه غیردیجیتالی",
+    requirements: "بازی‌های مبتنی بر واقعیت افزوده (AR) فیزیکی (VR)",
+    skills: "طراحی و ساخت بازی‌های فیزیکی، کار تیمی، تقویت مهارت‌های دستی و چالش‌های فناورانه و بارش فکری حل مسئله",
+    toolTypes: ["بازی فیزیکی","دانش فیزیک", "ابزار خلاقیت،"],
+    tools: [
+      { name: "واقعیت مجازی کاغذی", link: "" },
+      { name: "کیت‌های AR", link: "" },
+      {name:"paper Plane"},
+      {name:"Water Rockets"},
+      {name:"Catron Games with sensor"},
+
+
+    ],
+    image: "https://www.wikihow.com/images/thumb/9/95/Make-a-Water-Rocket-Step-10-Version-5.jpg/v4-460px-Make-a-Water-Rocket-Step-10-Version-5.jpg",
+  },
+  "robotic-p1-c1": {
+    title: "Bigital (Biology & Digital)",
+    requirements: "علاقه به زیست‌شناسی و فناوری دیجیتال",
+    skills: "درک ارتباط بین زیست‌شناسی و دیجیتال، کار با ابزارهای دیجیتال در زیست‌شناسی، تحلیل داده‌های زیستی",
+    toolTypes: ["نرم‌افزار زیست‌شناسی", "ابزار شبیه سازی شده"],
+    tools: [
+      { name: "Virtual Biology Lab", link: "https://www.biologylab.com" },
+      { name: "Data Analysis Tools", link: "https://www.graphpad.com" },
+    ],
+    image: "https://cdn.mos.cms.futurecdn.net/gYAV96FK7NW7uvwb5pLPTo.jpg",
+  },
+  "robotic-p1-c2": {
+    title: "Unchained coding",
+    requirements: [ "آشنایی اولیه با برنامه‌نویسی", "فکر خلاقانه برای حل مسئله",],
+    skills: ["برنامه‌نویسی خلاقانه، حل مسئله با کد، توسعه پروژه‌های فکری"],
+    toolTypes: ["محیط برنامه‌نویسی", "ابزار آموزش کدنویسی"],
+    tools: [
+        {name:"Google Course for Unchained", link: "https://research.google/blog/project-bloks-making-code-physical-for-kids/"},
+      { name: "Scratch", link: "https://scratch.mit.edu" },
+      { name: "Code.org", link: "https://code.org" },
+    ],
+    image: "https://www.pheamerica.org/wp-content/uploads/2022/11/IMG_4772-e1667449411833.jpg",
+  },
+  "digital-ai-p2-c1": {
+    title: "فرهنگ دیجیتال",
+    requirements: "آشنایی با مفاهیم دیجیتال، علاقه به جامعه‌شناسی دیجیتال",
+    skills: "درک تأثیرات دیجیتال بر جامعه، اخلاق دیجیتال، امنیت دیجیتال و آگاه سازی کودکان نسبت به عوامل دیجیتالی",
+    toolTypes: ["منابع آموزشی", "ابزار آگاهی‌رسانی"],
+    tools: [
+      { name: "Common Sense Media", link: "https://www.commonsensemedia.org" },
+      { name: "Digital Citizenship", link: "https://www.digitalcitizenship.net" },
+    ],
+    image: "https://www.euroschoolindia.com/wp-content/uploads/2023/08/digital-literacy-for-children.jpg",
+  },
+  "digital-ai-p2-c2": {
+    title: "پرامت نویسی",
+    requirements: "آشنایی با هوش مصنوعی، علاقه به توسعه",
+    skills: "کار با انواع چت بات‌ها و یادگیری انواع پیچ و خم در نوشتن پرامت",
+    toolTypes: ["پلتفرم هوش مصنوعی", "ابزار پرامت‌نویسی"],
+    tools: [ 
+    {name:"Prompt Guiden Books"},
+      { name: "ChatGPT", link: "https://chat.openai.com" },
+      { name: "Hugging Face", link: "https://huggingface.co" },
+    ],
+    image: "https://cdn.analyticsvidhya.com/wp-content/uploads/2024/04/Best-chatgpt-prompts-to-reduce-hours-of-work-in-minutes-scaled.jpg",
+  },
+  "game-p2-c1": {
+    title: "Scratch",
+    requirements: "آشنایی اولیه با برنامه‌نویسی، علاقه به بازی‌سازی",
+    skills: "برنامه‌نویسی بصری، طراحی بازی‌های ساده، تفکر الگوریتمی",
+    toolTypes: ["محیط برنامه‌نویسی", "بازی‌سازی"],
+    tools: [
+      { name: "Scratch", link: "https://scratch.mit.edu" },
+      { name: "Scratch Jr", link: "https://www.scratchjr.org" },
+    ],
+    image: "https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/02wchouritvxqgixxoeagap-2.fit-scale.size-760x427.v1569482197_ver_1.jpg",
+  },
+  "game-p2-c2": {
+    title: "شبیه سازها",
+    requirements: "علاقه به شبیه‌سازی، آشنایی با مفاهیم علمی",
+    skills: "کار با نرم‌افزارهای شبیه‌سازی، یادگیری آزمون و خطا در علم، درک مفاهیم پیچیده از طریق شبیه‌سازی",
+    toolTypes: ["نرم‌افزار شبیه‌سازی", "ابزار آموزشی"],
+    tools: [
+        {name: "Minecraft EDU."},
+        {name:"SimpleRockets"},
+      { name: "PhET Simulations", link: "https://phet.colorado.edu" },
+      { name: "Algodoo", link: "https://www.algodoo.com" },
+      {name: "Explorable Explanations"},
+
+    ],
+    image: "https://jundroo.blob.core.windows.net/simplerockets/files/2019/9/17/xd9k9y/11e578c2-a88c-4636-82d3-939d5f64bf7f.jpg",
+  },
+  "robotic-p2-c1": {
+    title: "Robo games",
+    requirements: "آشنایی با رباتیک، علاقه به بازی‌های رباتیک",
+    skills: "طراحی و ساخت ربات‌های بازی‌کننده، برنامه‌نویسی ربات‌ها، کار تیمی در مسابقات رباتیک از طریق محیط نرم‌افزاری",
+    toolTypes: ["نرم‌افزار رباتیک", "ابزار برنامه‌نویسی ربات"],
+    tools: [
+      { name: "Lego Mindstorms", link: "https://www.lego.com/en-us/themes/mindstorms" },
+      { name: "RobotC", link: "http://www.robotc.net" },
+      {name: "Robocode"},
+      {name: "Codecombat"},
+    ],
+    image: "https://assetsio.gnwcdn.com/robocode.png?width=1200&height=900&fit=crop&quality=100&format=png&enable=upscale&auto=webp",
+  },
+  "robotic-p2-c2": {
+    title: "سنسورهای ساده",
+    requirements: "آشنایی با الکترونیک پایه، علاقه به سنسورها",
+    skills: "کار با سنسورهای مختلف، اتصال سنسورها به میکروکنترلرها، تحلیل داده‌های سنسور",
+    toolTypes: ["سخت‌افزار الکترونیکی", "ابزار آزمایشگاهی"],
+    tools: [
+      { name: "Arduino", link: "https://www.arduino.cc" },
+      { name: "Tinkercad", link: "https://www.tinkercad.com" },
+    ],
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnkYPcqobQd_4tbNwB36o0AYOS_-SPS42g7Q&s",
+  },
+  "digital-ai-p3-c1": {
+    title: "ابزار هوش مصنوعی",
+    requirements: "تصور قبلی نسبت به پرامت نویسی و کار با کامپیوتر",
+    skills: "آشنایی با ابزارهای ساده‌سازی کار، کار با ادیتور، طراح و ساخت تصاویر ویدیو مصنوعی",
+    toolTypes: ["ابزار هوش مصنوعی", "تولید محتوای دیجیتال"],
+    tools: [
+      { name: "DALL-E", link: "https://openai.com/dall-e-3" },
+      { name: "Midjourney", link: "https://www.midjourney.com" },
+      {name: "Image genrators"},
+      {name: "Voice tranlator"},
+      {name: "Wrting tools"},
+      {name: "Using AI in Real Life"},
+    ],
+    image: "https://interestingengineering.com/_next/image?url=https%3A%2F%2Fimages.interestingengineering.com%2F2023%2F04%2F07%2Fimage%2Fjpeg%2FTFmS5Xv4IyEcfyflNhsdVewpOIU3fevrRUpejVSo.jpg&w=1200&q=75",
+  },
+  "digital-ai-p3-c2": {
+    title: "Code based Programming",
+    requirements: "تسلط بر برنامه‌نویسی، آشنایی با الگوریتم‌ها",
+    skills: "برنامه‌نویسی اولیه، توسعه نرم‌افزارهای کاربردی، بهینه‌سازی کد",
+    toolTypes: ["محیط برنامه‌نویسی", "ابزار توسعه نرم‌افزار"],
+    tools: [
+      { name: "Python", link: "https://www.python.org" },
+      { name: "Replit", link: "https://replit.com" },
+    ],
+    image: "https://codeop.tech/wp-content/uploads/2023/10/chris-ried-ieic5Tq8YMk-unsplash-scaled.jpg",
+  },
+  "game-p3-c1": {
+    title: "تحقیقات در قالب بازی",
+    requirements: "آشنایی با روش‌های تحقیق، علاقه به بازی‌سازی",
+    skills: "طراحی بازی‌های آموزشی، جمع‌آوری و تحلیل داده‌ها از طریق بازی، ارائه نتایج تحقیق به صورت تعاملی",
+    toolTypes: ["بازی آموزشی", "ابزار جمع‌آوری داده"],
+    tools: [
+      { name: "Kahoot", link: "https://kahoot.com" },
+      { name: "Google Forms", link: "https://www.google.com/forms/about/" },
+    ],
+    image: "https://blog.researcher.life/wp-content/uploads/2024/06/2149314067-1.jpg",
+  },
+  "game-p3-c2": {
+    title: "چالش‌ها",
+    requirements: "تسلط بر بازی‌سازی، خلاقیت",
+    skills: "حل یک چالش واقعی، بالانس کردن کار گروهی، آزمون خطا در کنار رقابت سالم",
+    toolTypes: ["تفکر منتقدانه", "ابزار های علمی"],
+    tools: [
+      { name: "به کار بردن علم",  },
+      { name: "Digital Tools", },
+    ],
+    image: "https://admissionsight.com/wp-content/uploads/2024/01/shutterstock_2221748207.jpg",
+  },
+  "robotic-p3-c1": {
+    title: "IoT",
+    requirements: "آشنایی با شبکه‌ها، برنامه‌نویسی",
+    skills: "آشنایی اولیه با اینترنت اشیاء، نحوه کارکرد وسایل هوشمند، همگام‌سازی هوشمند",
+    toolTypes: ["پلتفرم اینترنت اشیاء", "ابزار اتصال هوشمند"],
+    tools: [
+      { name: "Raspberry Pi", link: "https://www.raspberrypi.org" },
+      { name: "Blynk", link: "https://blynk.io" },
+    ],
+    image: "https://key1kala.com/wp-content/uploads/2024/09/iot.jpg",
+  },
+  "robotic-p3-c2": {
+    title: "Kits",
+    requirements: "آشنایی با رباتیک، الکترونیک",
+    skills: "کار با کیت‌های رباتیک پیشرفته، ساخت پروژه‌های پیچیده، ترکیب سنسورها و عملگرها",
+    toolTypes: ["کیت رباتیک", "ابزار ساخت ربات"],
+    tools: [
+      { name: "LEGO Robotics", link: "https://www.lego.com/en-us/themes/mindstorms" },
+      { name: "Makeblock", link: "https://www.makeblock.com" },
+    ],
+    image: "https://cdn.prod.website-files.com/5ed0d9d3a20c8f1906ca6434/61f93a91296f25ba30a47054_DSC_1791-scaled-1.jpeg",
+  },
+};
+
+        function createClassCard(phase, subject, classes) {
+            const container = document.querySelector('.class-grid');
+            const card = document.createElement('div');
+            card.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'class-card', 'hover:shadow-lg');
+            
+            card.innerHTML = `
+                <h3 class="text-xl font-bold mb-4 text-blue-600">${phase} - ${subject}</h3>
+                <div class="space-y-2">
+                    ${classes.map(classId => `
+                        <button onclick="showPopup('${classId}')" class="w-full text-left bg-blue-50 text-blue-800 px-4 py-2 rounded-md hover:bg-blue-100 transition">
+                            ${classInfo[classId].title}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(card);
+        }
+
+        // Populate class grid
+        const phaseSubjectClasses = [
+            { phase: 'Phase I', subject: 'Digital & AI', classes: ['digital-ai-p1-c1', 'digital-ai-p1-c2'] },
+            { phase: 'Phase I', subject: 'Game', classes: ['game-p1-c1', 'game-p1-c2'] },
+            { phase: 'Phase I', subject: 'Robotic', classes: ['robotic-p1-c1', 'robotic-p1-c2'] },
+
+                // Phase II
+    { phase: 'Phase II', subject: 'Digital & AI', classes: ['digital-ai-p2-c1', 'digital-ai-p2-c2'] },
+    { phase: 'Phase II', subject: 'Game', classes: ['game-p2-c1', 'game-p2-c2'] },
+    { phase: 'Phase II', subject: 'Robotic', classes: ['robotic-p2-c1', 'robotic-p2-c2'] },
+    
+    // Phase III
+    { phase: 'Phase III', subject: 'Digital & AI', classes: ['digital-ai-p3-c1', 'digital-ai-p3-c2'] },
+    { phase: 'Phase III', subject: 'Game', classes: ['game-p3-c1', 'game-p3-c2'] },
+    { phase: 'Phase III', subject: 'Robotic', classes: ['robotic-p3-c1', 'robotic-p3-c2'] }
+        ];
+
+        phaseSubjectClasses.forEach(item => {
+            createClassCard(item.phase, item.subject, item.classes);
+        });
+
+        function showPopup(classId) {
+            const popup = document.getElementById('popup');
+            const info = classInfo[classId];
+
+            document.getElementById('popup-title').textContent = info.title;
+            document.getElementById('popup-requirements').textContent = info.requirements;
+            document.getElementById('popup-skills').textContent = info.skills;
+
+            const popupImage = document.getElementById('popup-image');
+            popupImage.src = info.image || "/api/placeholder/400/300";
+            popupImage.alt = info.title;
+
+            const popupToolTypes = document.getElementById('popup-tool-types');
+            popupToolTypes.innerHTML = info.toolTypes && info.toolTypes.length > 0
+                ? info.toolTypes.map(type => `
+                    <span class="tool-badge">
+                        ${type}
+                    </span>
+                `).join('')
+                : '<span class="text-gray-500">نوع ابزار خاصی مشخص نشده</span>';
+
+            const popupTools = document.getElementById('popup-tools');
+            popupTools.innerHTML = info.tools && info.tools.length > 0
+                ? info.tools.map(tool => `
+                    <a href="${tool.link}" target="_blank" class="tool-badge">
+                        ${tool.name}
+                    </a>
+                `).join('')
+                : '<span class="text-gray-500">ابزار خاصی مورد نیاز نیست</span>';
+
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.classList.remove('flex');
+            popup.classList.add('hidden');
+        }
+
+        // Close popup when clicking outside
+        document.getElementById('popup').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>
